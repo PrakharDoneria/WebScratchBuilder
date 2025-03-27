@@ -37,6 +37,7 @@ export default function EditorPage() {
   const { data: project, isLoading: projectLoading } = useQuery({
     queryKey: ["/api/projects", projectId],
     enabled: !!projectId,
+    staleTime: Infinity, // Don't refetch unnecessarily, it could override our updates
   });
 
   // Initialize blocks from project data or create empty project
@@ -83,6 +84,7 @@ export default function EditorPage() {
           ? String(project.description || "") 
           : "";
         
+        // Important: Only send the blocks in the update, keep the name and description as is
         const response = await apiRequest("PUT", `/api/projects/${projectId}`, {
           name,
           description,
@@ -92,7 +94,11 @@ export default function EditorPage() {
       }
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      // Don't invalidate the current project query, only the projects list
+      queryClient.invalidateQueries({ 
+        queryKey: ["/api/projects"],
+        predicate: (query) => query.queryKey.length === 1
+      });
       toast({
         title: "Project saved",
         description: "Your project has been saved successfully.",

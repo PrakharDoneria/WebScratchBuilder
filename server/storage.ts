@@ -160,11 +160,11 @@ export class LocalStorage implements IStorage {
     const blocks = Array.isArray(updateData.blocks) ? updateData.blocks : 
                   (Array.isArray(project.blocks) ? project.blocks : []);
     
-    // Update the project with new data
+    // Update the project with new data, preserving name and description if they aren't explicitly provided
     const updatedProject: Project = {
       ...project,
-      name: updateData.name ?? project.name,
-      description: updateData.description ?? project.description,
+      name: updateData.name !== undefined ? updateData.name : project.name,
+      description: updateData.description !== undefined ? updateData.description : project.description,
       blocks: blocks,
       updatedAt: now
     };
@@ -280,8 +280,8 @@ export class MemStorage implements IStorage {
     // Create a fresh object without spreading to avoid type issues
     const updatedProject: Project = {
       id: project.id,
-      name: updateData.name ?? project.name,
-      description: updateData.description ?? project.description,
+      name: updateData.name !== undefined ? updateData.name : project.name,
+      description: updateData.description !== undefined ? updateData.description : project.description,
       userId: project.userId,
       blocks: Array.isArray(updateData.blocks) ? updateData.blocks : 
               (Array.isArray(project.blocks) ? project.blocks : []),
