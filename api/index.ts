@@ -1,13 +1,11 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { storage, IStorage } from '../server/storage';
+import { storage } from '../server/storage';
 import cors from 'cors';
 import { json } from 'express';
 import { 
   insertProjectSchema, 
   updateProjectSchema,
-  Project,
-  insertUserSchema,
-  User
+  Project
 } from '../shared/schema';
 
 const app = express();
