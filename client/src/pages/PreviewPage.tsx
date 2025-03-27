@@ -110,7 +110,9 @@ export default function PreviewPage() {
 
   // Generate HTML for server projects
   useEffect(() => {
-    if (project && Array.isArray(project.blocks)) {
+    if (project) {
+      console.log("Project data received:", project);
+      
       // First try to load latest blocks from localStorage if available
       try {
         const blocksKey = `html_editor_project_${projectId}_blocks`;
@@ -119,17 +121,25 @@ export default function PreviewPage() {
         if (savedBlocks) {
           // Use the blocks from localStorage (most recent edits)
           const blocks = JSON.parse(savedBlocks);
-          setHtml(generateHtml(blocks));
           console.log(`Using ${blocks.length} blocks from localStorage for project ${projectId}`);
-        } else {
+          setHtml(generateHtml(blocks));
+        } else if (project.blocks && Array.isArray(project.blocks)) {
           // Fall back to blocks from the project data from server
-          setHtml(generateHtml(project.blocks));
           console.log(`Using ${project.blocks.length} blocks from server data for project ${projectId}`);
+          setHtml(generateHtml(project.blocks));
+        } else {
+          console.warn("No valid blocks found in project data:", project);
+          setHtml("<div style='padding: 20px;'><h2>No content to display</h2><p>This project doesn't have any blocks yet.</p></div>");
         }
       } catch (e) {
         // If localStorage fails, use the blocks from the project data
         console.error('Failed to load blocks from localStorage:', e);
-        setHtml(generateHtml(project.blocks));
+        
+        if (project.blocks && Array.isArray(project.blocks)) {
+          setHtml(generateHtml(project.blocks));
+        } else {
+          setHtml("<div style='padding: 20px;'><h2>Error loading content</h2><p>There was a problem loading this project's content.</p></div>");
+        }
       }
       
       setLoading(false);

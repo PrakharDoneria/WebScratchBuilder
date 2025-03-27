@@ -74,8 +74,18 @@ export default function EditorPage() {
         return response.json();
       } else {
         // Otherwise update the existing project
+        // Extract the necessary fields for project update
+        const name = project && typeof project === 'object' && 'name' in project 
+          ? String(project.name) 
+          : "Untitled Project";
+        
+        const description = project && typeof project === 'object' && 'description' in project
+          ? String(project.description || "") 
+          : "";
+        
         const response = await apiRequest("PUT", `/api/projects/${projectId}`, {
-          ...project,
+          name,
+          description,
           blocks,
         });
         return response.json();
