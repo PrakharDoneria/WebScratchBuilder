@@ -1,4 +1,6 @@
 import { users, type User, type InsertUser, projects, type Project, type InsertProject, type UpdateProject } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 // Storage interface for users and projects
 export interface IStorage {
@@ -16,6 +18,63 @@ export interface IStorage {
   deleteProject(id: number): Promise<boolean>;
 }
 
+// Database implementation of storage
+export class DatabaseStorage implements IStorage {
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
+  }
+
+  // Project methods
+  async getAllProjects(): Promise<Project[]> {
+    return await db.select().from(projects);
+  }
+
+  async getProject(id: number): Promise<Project | undefined> {
+    const [project] = await db.select().from(projects).where(eq(projects.id, id));
+    return project;
+  }
+
+  async getProjectsByUserId(userId: number): Promise<Project[]> {
+    return await db.select().from(projects).where(eq(projects.userId, userId));
+  }
+
+  async createProject(insertProject: InsertProject): Promise<Project> {
+    const [project] = await db.insert(projects).values(insertProject).returning();
+    return project;
+  }
+
+  async updateProject(id: number, updateData: UpdateProject): Promise<Project | undefined> {
+    const [project] = await db
+      .update(projects)
+      .set({
+        ...updateData,
+        updatedAt: new Date()
+      })
+      .where(eq(projects.id, id))
+      .returning();
+    
+    return project;
+  }
+
+  async deleteProject(id: number): Promise<boolean> {
+    const result = await db.delete(projects).where(eq(projects.id, id));
+    return result.rowCount ? result.rowCount > 0 : false;
+  }
+}
+
+// In-memory implementation for fallback or testing
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private projects: Map<number, Project>;
@@ -107,4 +166,5 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Export the DatabaseStorage as the primary storage mechanism
+export const storage = new DatabaseStorage();

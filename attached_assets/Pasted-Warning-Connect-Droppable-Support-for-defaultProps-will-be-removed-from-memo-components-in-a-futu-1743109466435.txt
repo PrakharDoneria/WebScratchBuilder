@@ -1,0 +1,41 @@
+Warning: Connect(Droppable): Support for defaultProps will be removed from memo components in a future major release. Use JavaScript default parameters instead.
+    at Provider (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-beautiful-dnd.js?v=dcbf1222:1411:20)
+    at App (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-beautiful-dnd.js?v=dcbf1222:7954:25)
+    at ErrorBoundary2 (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-beautiful-dnd.js?v=dcbf1222:2451:35)
+    at DragDropContext (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-beautiful-dnd.js?v=dcbf1222:8074:19)
+    at div
+    at div
+    at Canvas (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/src/components/Canvas.tsx:23:3)
+    at div
+    at div
+    at EditorPage (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/src/pages/EditorPage.tsx:42:18)
+    at Route (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=dcbf1222:323:16)
+    at Switch (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=dcbf1222:379:17)
+    at Router
+    at div
+    at div
+    at DndProvider2 (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-dnd.js?v=dcbf1222:1309:9)
+    at QueryClientProvider (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=dcbf1222:2805:3)
+    at App
+at Provider (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-beautiful-dnd.js?v=dcbf1222:1411:20)
+at App (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-beautiful-dnd.js?v=dcbf1222:7954:25)
+at ErrorBoundary2 (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-beautiful-dnd.js?v=dcbf1222:2451:35)
+at DragDropContext (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-beautiful-dnd.js?v=dcbf1222:8074:19)
+at div
+at div
+at Canvas (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/src/components/Canvas.tsx:23:3)
+at div
+at div
+at EditorPage (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/src/pages/EditorPage.tsx:42:18)
+at Route (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=dcbf1222:323:16)
+at Switch (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=dcbf1222:379:17)
+at Router
+at div
+at div
+at DndProvider2 (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-dnd.js?v=dcbf1222:1309:9)
+at QueryClientProvider (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=dcbf1222:2805:3)
+at App
+at t.value (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aefc8015-52b4-47a5-9df9-81f3f53f4af1-00-16qykhl1glg12.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400

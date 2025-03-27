@@ -123,7 +123,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Card className="overflow-hidden border border-gray-200 hover:shadow-lg transition" onClick={() => navigate(`/editor/${project.id}`)}>
       <div className={`h-40 ${bgColor} flex items-center justify-center`}>
-        {project.blocks && project.blocks.length > 0 ? (
+        {project.blocks && Array.isArray(project.blocks) && project.blocks.length > 0 ? (
           <div className="text-center">
             <div className="text-lg font-medium text-gray-700">{project.blocks.length} blocks</div>
           </div>
@@ -144,7 +144,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         <div className="flex items-center justify-between mt-4">
           <div className="flex space-x-1">
             <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
-              {project.blocks?.length || 0} blocks
+              {(Array.isArray(project.blocks) ? project.blocks.length : 0)} blocks
             </span>
           </div>
           <div className="flex space-x-1" onClick={e => e.stopPropagation()}>

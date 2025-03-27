@@ -49,7 +49,7 @@ export default function EditorPage() {
     moveBlock,
     selectedBlock,
     setSelectedBlock,
-  } = useBlocks(project?.blocks || []);
+  } = useBlocks(Array.isArray(project?.blocks) ? project.blocks : []);
   
   // Generate HTML from blocks
   const { html } = useHtmlOutput(blocks);

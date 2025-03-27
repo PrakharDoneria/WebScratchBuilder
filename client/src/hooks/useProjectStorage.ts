@@ -62,7 +62,7 @@ export function useProjectStorage(projectId?: number) {
   // Initialize blocks from project data
   useEffect(() => {
     if (project) {
-      setBlocks(project.blocks || []);
+      setBlocks(Array.isArray(project.blocks) ? project.blocks : []);
       setProjectName(project.name || 'Untitled Project');
       setProjectDescription(project.description || '');
       setIsModified(false);
