@@ -49,10 +49,12 @@ export default function EditorPage() {
     moveBlock,
     selectedBlock,
     setSelectedBlock,
+    clearBlocks,
   } = useBlocks(
     project && typeof project === 'object' && 'blocks' in project && Array.isArray(project.blocks) 
       ? project.blocks 
-      : []
+      : [],
+    projectId
   );
   
   // Generate HTML from blocks
@@ -88,7 +90,19 @@ export default function EditorPage() {
       
       // If we created a new project, navigate to its editor URL
       if (!projectId) {
+        // Clean up draft blocks since we've saved them to a proper project
+        localStorage.removeItem('html_editor_draft_blocks');
+        
+        // Navigate to the new project editor
         navigate(`/editor/${data.id}`);
+      } else {
+        // Make sure blocks are saved to localStorage with the correct project ID
+        try {
+          const blocksKey = `html_editor_project_${projectId}_blocks`;
+          localStorage.setItem(blocksKey, JSON.stringify(blocks));
+        } catch (err) {
+          console.error('Failed to save blocks to localStorage:', err);
+        }
       }
     },
     onError: (error) => {

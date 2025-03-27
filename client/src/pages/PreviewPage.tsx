@@ -28,9 +28,8 @@ interface LocalProject {
 }
 
 // Constants for local storage
-const LS_BLOCKS_KEY = 'html_editor_blocks';
-const LS_PROJECT_NAME_KEY = 'html_editor_name';
-const LS_PROJECTS_KEY = 'html_editor_projects';
+const LS_DRAFT_BLOCKS_KEY = 'html_editor_draft_blocks';
+const LS_PROJECTS_KEY = 'html_editor_server_projects';
 
 export default function PreviewPage() {
   const params = useParams<{ id: string }>();
@@ -77,8 +76,8 @@ export default function PreviewPage() {
       setLoading(true);
       try {
         // Try to load the current draft
-        const savedBlocks = localStorage.getItem(LS_BLOCKS_KEY);
-        const savedName = localStorage.getItem(LS_PROJECT_NAME_KEY);
+        const savedBlocks = localStorage.getItem(LS_DRAFT_BLOCKS_KEY);
+        const savedName = "Untitled Draft";
         
         if (savedName) {
           setProjectName(savedName);
@@ -112,11 +111,30 @@ export default function PreviewPage() {
   // Generate HTML for server projects
   useEffect(() => {
     if (project && Array.isArray(project.blocks)) {
-      // Generate HTML from blocks
-      setHtml(generateHtml(project.blocks));
+      // First try to load latest blocks from localStorage if available
+      try {
+        const blocksKey = `html_editor_project_${projectId}_blocks`;
+        const savedBlocks = localStorage.getItem(blocksKey);
+        
+        if (savedBlocks) {
+          // Use the blocks from localStorage (most recent edits)
+          const blocks = JSON.parse(savedBlocks);
+          setHtml(generateHtml(blocks));
+          console.log(`Using ${blocks.length} blocks from localStorage for project ${projectId}`);
+        } else {
+          // Fall back to blocks from the project data from server
+          setHtml(generateHtml(project.blocks));
+          console.log(`Using ${project.blocks.length} blocks from server data for project ${projectId}`);
+        }
+      } catch (e) {
+        // If localStorage fails, use the blocks from the project data
+        console.error('Failed to load blocks from localStorage:', e);
+        setHtml(generateHtml(project.blocks));
+      }
+      
       setLoading(false);
     }
-  }, [project]);
+  }, [project, projectId]);
 
   // Handle downloading the HTML file
   const handleExportHtml = () => {

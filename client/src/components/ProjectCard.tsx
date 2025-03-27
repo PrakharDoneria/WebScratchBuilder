@@ -77,6 +77,15 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       await apiRequest("DELETE", `/api/projects/${project.id}`);
     },
     onSuccess: () => {
+      // Clean up localStorage blocks for this project
+      try {
+        const blocksKey = `html_editor_project_${project.id}_blocks`;
+        localStorage.removeItem(blocksKey);
+        console.log(`Cleaned up localStorage for project ${project.id}`);
+      } catch (err) {
+        console.error('Failed to clean up localStorage:', err);
+      }
+      
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
       setDeleteDialogOpen(false);
       toast({
