@@ -65,12 +65,18 @@ export class MemStorage implements IStorage {
   async createProject(insertProject: InsertProject): Promise<Project> {
     const id = this.projectIdCounter++;
     const now = new Date();
+    
+    // Create a fresh object without spreading to avoid type issues
     const project: Project = { 
-      ...insertProject, 
-      id, 
+      id,
+      name: insertProject.name, 
+      description: insertProject.description ?? null,
+      userId: insertProject.userId ?? null,
+      blocks: insertProject.blocks,
       createdAt: now, 
       updatedAt: now 
     };
+    
     this.projects.set(id, project);
     return project;
   }
@@ -80,10 +86,15 @@ export class MemStorage implements IStorage {
     if (!project) {
       return undefined;
     }
-
+    
+    // Create a fresh object without spreading to avoid type issues
     const updatedProject: Project = {
-      ...project,
-      ...updateData,
+      id: project.id,
+      name: updateData.name ?? project.name,
+      description: updateData.description ?? project.description,
+      userId: project.userId,
+      blocks: updateData.blocks ?? project.blocks,
+      createdAt: project.createdAt,
       updatedAt: new Date()
     };
 

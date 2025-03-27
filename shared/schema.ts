@@ -39,12 +39,12 @@ export const updateProjectSchema = createInsertSchema(projects).pick({
 });
 
 // Block type definitions for TypeScript safety
-export const blockSchema = z.object({
+export const blockSchema: z.ZodType<any> = z.object({
   id: z.string(),
   type: z.string(),
   content: z.any().optional(),
   properties: z.record(z.any()).optional(),
-  children: z.array(z.lazy(() => blockSchema)).optional(),
+  children: z.array(z.lazy((): z.ZodType<any> => blockSchema)).optional(),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
