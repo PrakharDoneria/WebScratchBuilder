@@ -9,7 +9,7 @@ import PropertiesPanel from "@/components/PropertiesPanel";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { generateHtml } from "@/lib/htmlGenerator";
-import { Blocks, Device, Save, Download, ArrowLeft, ArrowRight, Eye } from "lucide-react";
+import { Blocks, Save, Download, ArrowLeft, ArrowRight, Eye, Smartphone, Tablet, Monitor } from "lucide-react";
 import { type Block } from "@shared/schema";
 import useBlocks from "@/hooks/useBlocks";
 
@@ -49,7 +49,11 @@ export default function EditorPage() {
     moveBlock,
     selectedBlock,
     setSelectedBlock,
-  } = useBlocks(Array.isArray(project?.blocks) ? project.blocks : []);
+  } = useBlocks(
+    project && typeof project === 'object' && 'blocks' in project && Array.isArray(project.blocks) 
+      ? project.blocks 
+      : []
+  );
   
   // Generate HTML from blocks
   const { html } = useHtmlOutput(blocks);
@@ -102,7 +106,8 @@ export default function EditorPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${project?.name || "untitled"}.html`;
+    const projectName = project && typeof project === 'object' && 'name' in project ? project.name : "untitled";
+    a.download = `${projectName}.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
