@@ -14,8 +14,12 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={ProjectsPage} />
-      <Route path="/editor/:id?" component={EditorPage} />
+      <Route path="/editor" component={EditorPage} />
+      <Route path="/editor/:id" component={EditorPage} />
+      <Route path="/editor/local/:id" component={EditorPage} />
+      <Route path="/preview" component={PreviewPage} />
       <Route path="/preview/:id" component={PreviewPage} />
+      <Route path="/preview/local/:id" component={PreviewPage} />
       <Route component={NotFound} />
     </Switch>
   );

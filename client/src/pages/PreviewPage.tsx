@@ -4,33 +4,129 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { generateHtml } from "@/lib/htmlGenerator";
 import { ArrowLeft, Download, Monitor, Smartphone, Tablet } from "lucide-react";
+import { type Block, type Project as ServerProject } from "@shared/schema";
+
+// Define interface for Projects
+interface Project {
+  id: number;
+  name: string;
+  description: string | null;
+  blocks: Block[];
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+// Define local project type
+interface LocalProject {
+  id: string;
+  name: string;
+  description: string | null;
+  blocks: Block[];
+  createdAt: string;
+  updatedAt: string;
+  isLocal: boolean;
+}
+
+// Constants for local storage
+const LS_BLOCKS_KEY = 'html_editor_blocks';
+const LS_PROJECT_NAME_KEY = 'html_editor_name';
+const LS_PROJECTS_KEY = 'html_editor_projects';
 
 export default function PreviewPage() {
   const params = useParams<{ id: string }>();
   const [, navigate] = useLocation();
-  const projectId = parseInt(params.id);
+  const projectId = params.id.startsWith('local_') ? params.id : parseInt(params.id);
   const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [html, setHtml] = useState("");
+  const [projectName, setProjectName] = useState<string>("Untitled Project");
+  const [localProject, setLocalProject] = useState<LocalProject | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Fetch project data
-  const { data: project, isLoading } = useQuery({
-    queryKey: ["/api/projects", projectId],
+  const { data: project, isLoading } = useQuery<Project>({
+    queryKey: ["/api/projects", typeof projectId === 'number' ? projectId : null],
+    enabled: typeof projectId === 'number',
   });
 
+  // Check for a local project
   useEffect(() => {
-    if (project?.blocks) {
+    // First check if we're looking for a local project by ID
+    if (typeof projectId === 'string' && projectId.startsWith('local_')) {
+      setLoading(true);
+      try {
+        // Try to load project from local storage projects list
+        const savedProjects = localStorage.getItem(LS_PROJECTS_KEY);
+        if (savedProjects) {
+          const projects = JSON.parse(savedProjects);
+          const foundProject = projects.find((p: any) => p.id === projectId);
+          
+          if (foundProject) {
+            setLocalProject(foundProject);
+            setProjectName(foundProject.name);
+            setHtml(generateHtml(foundProject.blocks));
+          }
+        }
+      } catch (e) {
+        console.error('Failed to load local project:', e);
+      } finally {
+        setLoading(false);
+      }
+    } 
+    // If we're looking for a draft (no ID specified)
+    else if (!projectId) {
+      setLoading(true);
+      try {
+        // Try to load the current draft
+        const savedBlocks = localStorage.getItem(LS_BLOCKS_KEY);
+        const savedName = localStorage.getItem(LS_PROJECT_NAME_KEY);
+        
+        if (savedName) {
+          setProjectName(savedName);
+        }
+        
+        if (savedBlocks) {
+          const blocks = JSON.parse(savedBlocks);
+          setHtml(generateHtml(blocks));
+          
+          // Create a proper LocalProject object
+          const draftProject: LocalProject = {
+            id: 'draft',
+            name: savedName || 'Untitled Project',
+            description: null,
+            blocks,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            isLocal: true
+          };
+          
+          setLocalProject(draftProject);
+        }
+      } catch (e) {
+        console.error('Failed to load draft:', e);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [projectId]);
+
+  // Generate HTML for server projects
+  useEffect(() => {
+    if (project && Array.isArray(project.blocks)) {
       // Generate HTML from blocks
       setHtml(generateHtml(project.blocks));
+      setLoading(false);
     }
   }, [project]);
 
   // Handle downloading the HTML file
   const handleExportHtml = () => {
+    if (!html) return;
+    
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${project?.name || "untitled"}.html`;
+    a.download = `${project?.name || localProject?.name || "untitled"}.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -44,20 +140,35 @@ export default function PreviewPage() {
     mobile: "max-w-xs"
   };
 
+  // Determine if we have project data to show
+  const hasProjectData = project || localProject;
+  const currentProjectName = project?.name || localProject?.name || projectName;
+  
+  // Determine back button destination
+  const getBackUrl = () => {
+    if (typeof projectId === 'number') {
+      return `/editor/${projectId}`;
+    } else if (typeof projectId === 'string' && projectId.startsWith('local_')) {
+      return `/editor/local/${projectId}`;
+    } else {
+      return '/editor';
+    }
+  };
+
   return (
     <div className="w-full h-[calc(100vh-64px)] flex flex-col">
-      <div className="bg-white border-b border-gray-200 p-3 flex items-center justify-between">
-        <div className="flex items-center">
+      <div className="bg-white border-b border-gray-200 p-3 flex items-center justify-between flex-wrap">
+        <div className="flex items-center mb-2 md:mb-0">
           <Button 
-            variant="primary" 
-            onClick={() => navigate(`/editor/${projectId}`)}
+            variant="default" 
+            onClick={() => navigate(getBackUrl())}
             className="flex items-center"
           >
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Editor
           </Button>
-          {!isLoading && project && (
+          {hasProjectData && (
             <span className="ml-4 text-gray-500 text-sm">
-              Previewing: <span className="font-medium text-gray-700">{project.name}</span>
+              Previewing: <span className="font-medium text-gray-700">{currentProjectName}</span>
             </span>
           )}
         </div>
@@ -85,21 +196,26 @@ export default function PreviewPage() {
               <Smartphone className="h-4 w-4" />
             </Button>
           </div>
-          <Button variant="outline" onClick={handleExportHtml}>
+          <Button 
+            variant="outline" 
+            onClick={handleExportHtml}
+            disabled={!html}
+          >
             <Download className="h-4 w-4 mr-2" /> Export HTML
           </Button>
         </div>
       </div>
       <div className="flex-1 overflow-auto bg-gray-200 p-6">
-        {isLoading ? (
+        {loading || isLoading ? (
           <div className="max-w-6xl mx-auto bg-white min-h-screen animate-pulse"></div>
-        ) : project ? (
+        ) : hasProjectData ? (
           <div className={`${deviceClasses[device]} mx-auto bg-white min-h-[600px] shadow-md transition-all duration-300`}>
             {html ? (
               <iframe 
                 srcDoc={html}
                 className="w-full h-full min-h-[600px] border-0"
                 title="HTML Preview"
+                sandbox="allow-scripts"
               />
             ) : (
               <div className="flex items-center justify-center h-full text-gray-500">
