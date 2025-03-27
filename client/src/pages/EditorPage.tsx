@@ -13,6 +13,17 @@ import { Blocks, Device, Save, Download, ArrowLeft, ArrowRight, Eye } from "luci
 import { type Block } from "@shared/schema";
 import useBlocks from "@/hooks/useBlocks";
 
+// Update HTML when blocks change
+function useHtmlOutput(blocks: Block[]) {
+  const [html, setHtml] = useState("");
+  
+  useEffect(() => {
+    setHtml(generateHtml(blocks));
+  }, [blocks]);
+  
+  return { html };
+}
+
 export default function EditorPage() {
   const params = useParams<{ id?: string }>();
   const [, navigate] = useLocation();
@@ -21,7 +32,6 @@ export default function EditorPage() {
   
   const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
-  const { html } = useHtmlOutput();
 
   // Fetch project data if editing an existing project
   const { data: project, isLoading: projectLoading } = useQuery({
@@ -40,17 +50,9 @@ export default function EditorPage() {
     selectedBlock,
     setSelectedBlock,
   } = useBlocks(project?.blocks || []);
-
-  // Update HTML when blocks change
-  function useHtmlOutput() {
-    const [html, setHtml] = useState("");
-    
-    useEffect(() => {
-      setHtml(generateHtml(blocks));
-    }, [blocks]);
-    
-    return { html };
-  }
+  
+  // Generate HTML from blocks
+  const { html } = useHtmlOutput(blocks);
 
   // Save project mutation
   const saveMutation = useMutation({
