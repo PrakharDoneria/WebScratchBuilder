@@ -139,14 +139,14 @@ export default function EditorPage() {
   };
 
   return (
-    <div className="w-full h-[calc(100vh-64px)] flex flex-col md:flex-row">
+    <div className="w-full h-[calc(100vh-64px)] flex flex-col md:flex-row bg-background">
       {/* Left Sidebar - Block Palette */}
       <BlockPalette onAddBlock={addBlock} />
       
       {/* Center - Canvas Workspace */}
-      <div className="flex-1 flex flex-col bg-gray-50 overflow-hidden">
+      <div className="flex-1 flex flex-col bg-muted/20 overflow-hidden">
         {/* Canvas Toolbar */}
-        <div className="bg-white border-b border-gray-200 p-2 flex items-center justify-between">
+        <div className="bg-background border-b border-border p-2 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Button variant="ghost" size="icon" disabled>
               <ArrowLeft className="h-4 w-4" />
@@ -154,20 +154,37 @@ export default function EditorPage() {
             <Button variant="ghost" size="icon" disabled>
               <ArrowRight className="h-4 w-4" />
             </Button>
-            <div className="h-4 border-r border-gray-300 mx-1"></div>
+            <div className="h-4 border-r border-border mx-1"></div>
             <Select value={device} onValueChange={(value: "desktop" | "tablet" | "mobile") => setDevice(value)}>
-              <SelectTrigger className="w-32">
+              <SelectTrigger className="w-32 bg-background border-border text-foreground">
                 <SelectValue placeholder="Device" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="desktop">Desktop</SelectItem>
-                <SelectItem value="tablet">Tablet</SelectItem>
-                <SelectItem value="mobile">Mobile</SelectItem>
+                <SelectItem value="desktop">
+                  <div className="flex items-center">
+                    <Monitor className="h-4 w-4 mr-2" /> Desktop
+                  </div>
+                </SelectItem>
+                <SelectItem value="tablet">
+                  <div className="flex items-center">
+                    <Tablet className="h-4 w-4 mr-2" /> Tablet
+                  </div>
+                </SelectItem>
+                <SelectItem value="mobile">
+                  <div className="flex items-center">
+                    <Smartphone className="h-4 w-4 mr-2" /> Mobile
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Button variant="outline" size="sm" onClick={() => navigate(`/preview/${projectId}`)}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => navigate(`/preview/${projectId || ''}`)}
+              className="text-foreground"
+            >
               <Eye className="h-4 w-4 mr-2" /> Preview
             </Button>
           </div>
@@ -193,7 +210,7 @@ export default function EditorPage() {
       />
 
       {/* Footer Actions */}
-      <div className="fixed bottom-4 right-4 flex space-x-2">
+      <div className="fixed bottom-4 right-4 flex space-x-2 z-10">
         <Button 
           onClick={() => saveMutation.mutate()} 
           disabled={saveMutation.isPending}
@@ -205,7 +222,7 @@ export default function EditorPage() {
         <Button 
           variant="outline" 
           onClick={handleExportHtml} 
-          className="shadow-md"
+          className="shadow-md bg-background text-foreground border-border"
         >
           <Download className="h-4 w-4 mr-2" /> Export HTML
         </Button>
