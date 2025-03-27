@@ -52,8 +52,6 @@ export type User = typeof users.$inferSelect;
 
 export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type UpdateProject = z.infer<typeof updateProjectSchema>;
-export type Project = typeof projects.$inferSelect & {
-  blocks: Block[] | [];
-};
+export type Project = typeof projects.$inferSelect;
 
 export type Block = z.infer<typeof blockSchema>;

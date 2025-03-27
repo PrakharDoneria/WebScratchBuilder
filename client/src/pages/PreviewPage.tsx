@@ -15,13 +15,6 @@ export default function PreviewPage() {
   // Fetch project data
   const { data: project, isLoading } = useQuery({
     queryKey: ["/api/projects", projectId],
-    queryFn: async () => {
-      const response = await fetch(`/api/projects/${projectId}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch project');
-      }
-      return response.json();
-    },
   });
 
   useEffect(() => {
@@ -56,7 +49,7 @@ export default function PreviewPage() {
       <div className="bg-white border-b border-gray-200 p-3 flex items-center justify-between">
         <div className="flex items-center">
           <Button 
-            variant="default" 
+            variant="primary" 
             onClick={() => navigate(`/editor/${projectId}`)}
             className="flex items-center"
           >
