@@ -18,8 +18,12 @@ export interface IStorage {
 
 // LocalStorage storage implementation
 export class LocalStorage implements IStorage {
+  // Keys for storing data in localStorage
   private LS_KEY_USERS = "html_editor_users";
   private LS_KEY_PROJECTS = "html_editor_server_projects";
+  private LS_KEY_USER_COUNTER = "html_editor_user_counter";
+  private LS_KEY_PROJECT_COUNTER = "html_editor_project_counter";
+  
   private userIdCounter: number = 1;
   private projectIdCounter: number = 1;
 
@@ -28,17 +32,53 @@ export class LocalStorage implements IStorage {
   }
 
   private loadCounters() {
-    // Get all users to determine the max ID
-    const users = this.getUsers();
-    this.userIdCounter = users.length > 0 
-      ? Math.max(...users.map(u => u.id)) + 1 
-      : 1;
-
-    // Get all projects to determine the max ID
-    const projects = this.getProjects();
-    this.projectIdCounter = projects.length > 0 
-      ? Math.max(...projects.map(p => p.id)) + 1 
-      : 1;
+    try {
+      if (typeof localStorage !== 'undefined') {
+        // Try to load counters directly from localStorage first
+        const userCounter = localStorage.getItem(this.LS_KEY_USER_COUNTER);
+        const projectCounter = localStorage.getItem(this.LS_KEY_PROJECT_COUNTER);
+        
+        if (userCounter) {
+          this.userIdCounter = parseInt(userCounter, 10);
+        } else {
+          // Fallback: determine based on existing users
+          const users = this.getUsers();
+          this.userIdCounter = users.length > 0 
+            ? Math.max(...users.map(u => u.id)) + 1 
+            : 1;
+          // Save the counter for next time
+          localStorage.setItem(this.LS_KEY_USER_COUNTER, this.userIdCounter.toString());
+        }
+        
+        if (projectCounter) {
+          this.projectIdCounter = parseInt(projectCounter, 10);
+        } else {
+          // Fallback: determine based on existing projects
+          const projects = this.getProjects();
+          this.projectIdCounter = projects.length > 0 
+            ? Math.max(...projects.map(p => p.id)) + 1 
+            : 1;
+          // Save the counter for next time
+          localStorage.setItem(this.LS_KEY_PROJECT_COUNTER, this.projectIdCounter.toString());
+        }
+      } else {
+        // Fallback if localStorage is not available (server-side)
+        const users = this.getUsers();
+        this.userIdCounter = users.length > 0 
+          ? Math.max(...users.map(u => u.id)) + 1 
+          : 1;
+          
+        const projects = this.getProjects();
+        this.projectIdCounter = projects.length > 0 
+          ? Math.max(...projects.map(p => p.id)) + 1 
+          : 1;
+      }
+    } catch (e) {
+      console.error('Error loading counters:', e);
+      // Set default values if something goes wrong
+      this.userIdCounter = 1;
+      this.projectIdCounter = 1;
+    }
   }
 
   private getUsers(): User[] {
@@ -89,7 +129,11 @@ export class LocalStorage implements IStorage {
     
     try {
       if (typeof localStorage !== 'undefined') {
+        // Save the updated users array
         localStorage.setItem(this.LS_KEY_USERS, JSON.stringify(users));
+        
+        // Save the updated counter
+        localStorage.setItem(this.LS_KEY_USER_COUNTER, this.userIdCounter.toString());
       }
     } catch (e) {
       console.error('Failed to save user to localStorage:', e);
@@ -136,7 +180,11 @@ export class LocalStorage implements IStorage {
     
     try {
       if (typeof localStorage !== 'undefined') {
+        // Save the updated projects array
         localStorage.setItem(this.LS_KEY_PROJECTS, JSON.stringify(projects));
+        
+        // Save the updated counter
+        localStorage.setItem(this.LS_KEY_PROJECT_COUNTER, this.projectIdCounter.toString());
       }
     } catch (e) {
       console.error('Failed to save project to localStorage:', e);
@@ -298,8 +346,9 @@ export class MemStorage implements IStorage {
   }
 }
 
-// Determine which storage to use based on environment
+// Always use LocalStorage for persistence, per user's preference
+// If running on server, MemStorage will be used as a temporary fallback until the client takes over
 const isServer = typeof window === 'undefined';
 
-// Use LocalStorage on client, MemStorage on server as a fallback
+// Use LocalStorage for client-side persistence
 export const storage = isServer ? new MemStorage() : new LocalStorage();
