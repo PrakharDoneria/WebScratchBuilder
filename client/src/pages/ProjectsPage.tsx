@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { type Project } from "@shared/schema";
 import ProjectCard from "@/components/ProjectCard";
 import { Plus, Code } from "lucide-react";
@@ -21,7 +21,7 @@ export default function ProjectsPage() {
   });
 
   // Fetch all projects
-  const { data: projects = [], isLoading } = useQuery({
+  const { data: projects = [], isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
   });
 
@@ -85,6 +85,9 @@ export default function ProjectsPage() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Create a new HTML project</DialogTitle>
+                <DialogDescription>
+                  Enter the details for your new HTML project. You'll be able to add blocks and design your page after creation.
+                </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">

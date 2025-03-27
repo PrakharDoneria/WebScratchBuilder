@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { 
   AlertDialog,
@@ -157,6 +158,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Rename Project</DialogTitle>
+                  <DialogDescription>
+                    Update the name of your project. This won't affect your blocks or design.
+                  </DialogDescription>
                 </DialogHeader>
                 <div className="py-4">
                   <Input
