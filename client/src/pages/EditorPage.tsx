@@ -9,7 +9,7 @@ import PropertiesPanel from "@/components/PropertiesPanel";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { generateHtml } from "@/lib/htmlGenerator";
-import { Blocks, Device, Save, Download, ArrowLeft, ArrowRight, Eye } from "lucide-react";
+import { Blocks, Monitor, Save, Download, ArrowLeft, ArrowRight, Eye } from "lucide-react";
 import { type Block } from "@shared/schema";
 import useBlocks from "@/hooks/useBlocks";
 
@@ -37,6 +37,14 @@ export default function EditorPage() {
   const { data: project, isLoading: projectLoading } = useQuery({
     queryKey: ["/api/projects", projectId],
     enabled: !!projectId,
+    queryFn: async () => {
+      if (!projectId) return null;
+      const response = await fetch(`/api/projects/${projectId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch project');
+      }
+      return response.json();
+    },
   });
 
   // Initialize blocks from project data or create empty project

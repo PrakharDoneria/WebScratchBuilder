@@ -23,6 +23,13 @@ export default function ProjectsPage() {
   // Fetch all projects
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ["/api/projects"],
+    queryFn: async () => {
+      const response = await fetch('/api/projects');
+      if (!response.ok) {
+        throw new Error('Failed to fetch projects');
+      }
+      return response.json();
+    },
   });
 
   // Create a new project
@@ -67,8 +74,31 @@ export default function ProjectsPage() {
     createProjectMutation.mutate(newProject);
   };
 
+  // Delete project mutation
+  const deleteProjectMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await fetch(`/api/projects/${id}`, {
+        method: 'DELETE',
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      toast({
+        title: "Project deleted",
+        description: "Your project has been deleted successfully."
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error deleting project",
+        description: error.message || "Something went wrong. Please try again.",
+        variant: "destructive"
+      });
+    }
+  });
+
   const handleDeleteProject = async (id: number) => {
-    // Logic handled in ProjectCard component
+    deleteProjectMutation.mutate(id);
   };
 
   return (
