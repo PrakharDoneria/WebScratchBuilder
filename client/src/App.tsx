@@ -2,6 +2,7 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import NotFound from "@/pages/not-found";
 import ProjectsPage from "@/pages/ProjectsPage";
 import EditorPage from "@/pages/EditorPage";
@@ -27,9 +28,9 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <ThemeProvider defaultTheme="system" storageKey="html-editor-theme">
       <DndProvider backend={HTML5Backend}>
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen bg-background text-foreground">
           <Navbar />
           <div className="flex-1">
             <Router />
@@ -37,7 +38,7 @@ function App() {
         </div>
         <Toaster />
       </DndProvider>
-    </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

@@ -120,39 +120,39 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
   // Determine a background color based on project id
   const bgColors = [
-    "bg-blue-100",
-    "bg-green-100",
-    "bg-purple-100",
-    "bg-pink-100",
-    "bg-yellow-100",
-    "bg-indigo-100",
+    "bg-blue-100 dark:bg-blue-950/40",
+    "bg-green-100 dark:bg-green-950/40",
+    "bg-purple-100 dark:bg-purple-950/40",
+    "bg-pink-100 dark:bg-pink-950/40",
+    "bg-yellow-100 dark:bg-yellow-950/40",
+    "bg-indigo-100 dark:bg-indigo-950/40",
   ];
   const bgColor = bgColors[project.id % bgColors.length];
 
   return (
-    <Card className="overflow-hidden border border-gray-200 hover:shadow-lg transition" onClick={() => navigate(`/editor/${project.id}`)}>
+    <Card className="overflow-hidden border border-border hover:shadow-lg transition-all dark:bg-muted/20" onClick={() => navigate(`/editor/${project.id}`)}>
       <div className={`h-40 ${bgColor} flex items-center justify-center`}>
         {project.blocks && Array.isArray(project.blocks) && project.blocks.length > 0 ? (
           <div className="text-center">
-            <div className="text-lg font-medium text-gray-700">{project.blocks.length} blocks</div>
+            <div className="text-lg font-medium text-gray-700 dark:text-gray-200">{project.blocks.length} blocks</div>
           </div>
         ) : (
           <div className="text-center">
-            <div className="text-gray-500">Empty Project</div>
+            <div className="text-gray-500 dark:text-gray-400">Empty Project</div>
           </div>
         )}
       </div>
       <CardContent className="p-4">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-lg">{project.name}</h3>
-          <span className="text-xs text-gray-500">Last edited: {formattedDate}</span>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+          <h3 className="font-semibold text-lg text-foreground">{project.name}</h3>
+          <span className="text-xs text-muted-foreground">Last edited: {formattedDate}</span>
         </div>
-        <p className="text-gray-600 text-sm mt-2">
+        <p className="text-muted-foreground text-sm mt-2">
           {project.description || "No description provided"}
         </p>
         <div className="flex items-center justify-between mt-4">
           <div className="flex space-x-1">
-            <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+            <span className="px-2 py-1 bg-muted/50 text-muted-foreground rounded text-xs">
               {(Array.isArray(project.blocks) ? project.blocks.length : 0)} blocks
             </span>
           </div>
@@ -210,7 +210,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             {/* Delete Dialog */}
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
               <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50" title="Delete">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-8 w-8 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/30" 
+                  title="Delete"
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </AlertDialogTrigger>
@@ -225,7 +230,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction 
                     onClick={handleDelete} 
-                    className="bg-red-500 hover:bg-red-600"
+                    className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white"
                     disabled={deleteMutation.isPending}
                   >
                     {deleteMutation.isPending ? "Deleting..." : "Delete"}

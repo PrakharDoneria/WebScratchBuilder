@@ -3,7 +3,7 @@ import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { generateHtml } from "@/lib/htmlGenerator";
-import { ArrowLeft, Download, Monitor, Smartphone, Tablet } from "lucide-react";
+import { AlertCircle, ArrowLeft, Download, Monitor, Smartphone, Tablet } from "lucide-react";
 import { type Block, type Project as ServerProject } from "@shared/schema";
 
 // Define interface for Projects
@@ -184,28 +184,30 @@ export default function PreviewPage() {
   };
 
   return (
-    <div className="w-full h-[calc(100vh-64px)] flex flex-col">
-      <div className="bg-white border-b border-gray-200 p-3 flex items-center justify-between flex-wrap">
+    <div className="w-full h-[calc(100vh-64px)] flex flex-col bg-background">
+      <header className="bg-background border-b border-border p-3 flex items-center justify-between flex-wrap glass-effect">
         <div className="flex items-center mb-2 md:mb-0">
           <Button 
-            variant="default" 
+            variant="outline" 
             onClick={() => navigate(getBackUrl())}
             className="flex items-center"
+            size="sm"
           >
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Editor
           </Button>
           {hasProjectData && (
-            <span className="ml-4 text-gray-500 text-sm">
-              Previewing: <span className="font-medium text-gray-700">{currentProjectName}</span>
+            <span className="ml-4 text-muted-foreground text-sm md:flex items-center hidden">
+              Previewing: <span className="font-medium text-foreground ml-1">{currentProjectName}</span>
             </span>
           )}
         </div>
         <div className="flex items-center space-x-3">
-          <div className="flex bg-gray-100 rounded p-1">
+          <div className="flex bg-muted rounded-md p-1">
             <Button 
               size="icon" 
               variant={device === "desktop" ? "default" : "ghost"}
               onClick={() => setDevice("desktop")}
+              className="h-8 w-8"
             >
               <Monitor className="h-4 w-4" />
             </Button>
@@ -213,6 +215,7 @@ export default function PreviewPage() {
               size="icon" 
               variant={device === "tablet" ? "default" : "ghost"}
               onClick={() => setDevice("tablet")}
+              className="h-8 w-8"
             >
               <Tablet className="h-4 w-4" />
             </Button>
@@ -220,6 +223,7 @@ export default function PreviewPage() {
               size="icon" 
               variant={device === "mobile" ? "default" : "ghost"}
               onClick={() => setDevice("mobile")}
+              className="h-8 w-8"
             >
               <Smartphone className="h-4 w-4" />
             </Button>
@@ -228,41 +232,53 @@ export default function PreviewPage() {
             variant="outline" 
             onClick={handleExportHtml}
             disabled={!html}
+            size="sm"
+            className="flex items-center"
           >
             <Download className="h-4 w-4 mr-2" /> Export HTML
           </Button>
         </div>
-      </div>
-      <div className="flex-1 overflow-auto bg-gray-200 p-6">
+      </header>
+      <main className="flex-1 overflow-auto bg-muted/30 p-4 md:p-6">
+        {hasProjectData && (
+          <div className="mb-2 text-sm text-muted-foreground md:hidden flex justify-center">
+            <span>Previewing: <span className="font-medium text-foreground ml-1">{currentProjectName}</span></span>
+          </div>
+        )}
+        
         {loading || isLoading ? (
-          <div className="max-w-6xl mx-auto bg-white min-h-screen animate-pulse"></div>
+          <div className="max-w-6xl mx-auto bg-background min-h-[600px] animate-pulse rounded-lg shadow-md"></div>
         ) : hasProjectData ? (
-          <div className={`${deviceClasses[device]} mx-auto bg-white min-h-[600px] shadow-md transition-all duration-300`}>
+          <div className={`${deviceClasses[device]} mx-auto bg-white dark:bg-slate-950 min-h-[600px] shadow-md transition-all duration-300 rounded slide-up`}>
             {html ? (
               <iframe 
                 srcDoc={html}
-                className="w-full h-full min-h-[600px] border-0"
+                className="w-full h-full min-h-[600px] border-0 rounded"
                 title="HTML Preview"
                 sandbox="allow-scripts"
               />
             ) : (
-              <div className="flex items-center justify-center h-full text-gray-500">
+              <div className="flex items-center justify-center h-full text-muted-foreground">
                 No content to preview
               </div>
             )}
           </div>
         ) : (
-          <div className="text-center py-10">
-            <p>Project not found</p>
+          <div className="text-center py-10 bg-card rounded-xl shadow-sm border border-border p-8 max-w-md mx-auto slide-up">
+            <div className="bg-muted/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-bold mb-3">Project not found</h3>
+            <p className="text-muted-foreground mb-6">The project you're looking for doesn't exist or has been deleted.</p>
             <Button 
-              className="mt-4" 
+              className="px-6" 
               onClick={() => navigate("/")}
             >
               Back to Projects
             </Button>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }

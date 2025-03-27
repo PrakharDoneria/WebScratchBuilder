@@ -72,10 +72,13 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="w-full p-6 fade-in">
+    <div className="w-full px-4 py-8 md:p-8 fade-in bg-background">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">My HTML Projects</h1>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">HTML Block Projects</h1>
+            <p className="text-muted-foreground mt-1">Build websites visually without writing code</p>
+          </div>
           <Dialog open={newProjectOpen} onOpenChange={setNewProjectOpen}>
             <DialogTrigger asChild>
               <Button className="flex items-center gap-2">
@@ -84,7 +87,7 @@ export default function ProjectsPage() {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Create a new HTML project</DialogTitle>
+                <DialogTitle>Create a new project</DialogTitle>
                 <DialogDescription>
                   Enter the details for your new HTML project. You'll be able to add blocks and design your page after creation.
                 </DialogDescription>
@@ -99,6 +102,7 @@ export default function ProjectsPage() {
                     value={newProject.name}
                     onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
                     placeholder="My Awesome Website"
+                    className="w-full"
                   />
                 </div>
                 <div className="grid gap-2">
@@ -111,6 +115,7 @@ export default function ProjectsPage() {
                     onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
                     placeholder="What's this project about?"
                     rows={3}
+                    className="resize-none"
                   />
                 </div>
               </div>
@@ -132,14 +137,14 @@ export default function ProjectsPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 h-72 animate-pulse">
-                <div className="h-40 bg-gray-200"></div>
+              <div key={i} className="rounded-lg shadow-md overflow-hidden border border-border h-72 animate-pulse bg-muted/20">
+                <div className="h-40 bg-muted"></div>
                 <div className="p-4">
-                  <div className="h-4 bg-gray-200 rounded mb-2 w-3/4"></div>
-                  <div className="h-3 bg-gray-100 rounded w-full mb-4"></div>
+                  <div className="h-4 bg-muted rounded mb-2 w-3/4"></div>
+                  <div className="h-3 bg-muted/50 rounded w-full mb-4"></div>
                   <div className="flex justify-between">
-                    <div className="h-3 bg-gray-100 rounded w-1/3"></div>
-                    <div className="h-3 bg-gray-100 rounded w-1/4"></div>
+                    <div className="h-3 bg-muted/50 rounded w-1/3"></div>
+                    <div className="h-3 bg-muted/50 rounded w-1/4"></div>
                   </div>
                 </div>
               </div>
@@ -158,12 +163,12 @@ export default function ProjectsPage() {
             {/* New Project Card (always shown as last) */}
             <Dialog open={newProjectOpen} onOpenChange={setNewProjectOpen}>
               <DialogTrigger asChild>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center h-72 bg-white hover:border-primary hover:bg-primary-light/10 transition cursor-pointer">
-                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                    <Plus className="h-8 w-8 text-gray-500" />
+                <div className="border-2 border-dashed border-muted-foreground/30 rounded-lg flex flex-col items-center justify-center h-72 bg-muted/10 hover:border-primary hover:bg-primary/5 dark:hover:bg-primary/10 transition-all cursor-pointer group">
+                  <div className="w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-colors">
+                    <Plus className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
                   </div>
-                  <p className="text-gray-600 font-medium">Create New Project</p>
-                  <p className="text-gray-500 text-sm mt-1">Start building your HTML</p>
+                  <p className="font-medium text-foreground group-hover:text-primary transition-colors">Create New Project</p>
+                  <p className="text-muted-foreground text-sm mt-1">Start building your HTML</p>
                 </div>
               </DialogTrigger>
             </Dialog>
@@ -171,13 +176,16 @@ export default function ProjectsPage() {
         )}
 
         {!isLoading && projects.length === 0 && (
-          <div className="text-center py-16">
-            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-              <Code className="h-8 w-8 text-gray-500" />
+          <div className="text-center py-16 bg-card rounded-xl shadow-sm border border-border p-8 mt-8">
+            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+              <Code className="h-10 w-10 text-primary" />
             </div>
-            <h3 className="text-xl font-medium text-gray-700 mb-2">No projects yet</h3>
-            <p className="text-gray-500 mb-6 max-w-md mx-auto">Start by creating your first HTML project with our visual block editor.</p>
-            <Button onClick={() => setNewProjectOpen(true)}>
+            <h3 className="text-2xl font-bold mb-3 text-foreground">No projects yet</h3>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              Start by creating your first HTML project with our visual block editor. 
+              No coding required!
+            </p>
+            <Button onClick={() => setNewProjectOpen(true)} size="lg" className="px-8">
               Create Your First Project
             </Button>
           </div>
