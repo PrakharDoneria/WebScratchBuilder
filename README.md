@@ -27,10 +27,10 @@ A modern web-based block-style HTML editor with drag-and-drop functionality and 
 
 ```bash
 # Clone the repository
-git clone https://github.com/PrakharDoneria/WebScratchBuilder.git
+git clone https://github.com/yourusername/html-block-editor.git
 
 # Navigate to the project directory
-cd WebScratchBuilder
+cd html-block-editor
 
 # Install dependencies
 npm install
