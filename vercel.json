@@ -1,14 +1,18 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "./vercel-build.sh",
+  "outputDirectory": "dist/public",
+  "installCommand": "npm install",
   "functions": {
-    "api/index.ts": {
-      "runtime": "nodejs18.x"
+    "api/projects.ts": {
+      "runtime": "nodejs18.x",
+      "memory": 1024
     }
   },
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.ts" },
-    { "source": "/(.*)", "destination": "/" }
+  "routes": [
+    { "src": "/api/projects", "dest": "/api/projects.ts" },
+    { "src": "/api/projects/(.*)", "dest": "/api/projects.ts?id=$1" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

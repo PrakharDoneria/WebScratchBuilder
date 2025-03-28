@@ -1,5 +1,22 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
+// Handle API base URL for local development vs production deployment
+function getBaseUrl() {
+  // Check if we're in a browser environment
+  if (typeof window !== 'undefined') {
+    // If using localhost, use relative path
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return '';
+    }
+    
+    // For production, use the deployed API URL
+    return '';
+  }
+  
+  // Fallback to relative path
+  return '';
+}
+
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
@@ -12,7 +29,10 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  const baseUrl = getBaseUrl();
+  const fullUrl = `${baseUrl}${url}`;
+  
+  const res = await fetch(fullUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
@@ -29,7 +49,10 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
+    const baseUrl = getBaseUrl();
+    const fullUrl = `${baseUrl}${queryKey[0]}`;
+    
+    const res = await fetch(fullUrl, {
       credentials: "include",
     });
 
