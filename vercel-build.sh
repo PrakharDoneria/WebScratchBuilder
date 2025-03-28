@@ -1,26 +1,10 @@
 #!/bin/bash
 
-# Install dependencies if needed
-npm install
+# This script is used by Vercel's static build process
 
-# Make sure esbuild is available (required for server build)
-if ! [ -x "$(command -v esbuild)" ]; then
-  npm install -g esbuild
-fi
-
-# Create public dir if needed
-mkdir -p dist/public
-
-# Build the client with Vite
+# Build the frontend only - Vercel will handle the API serverless functions separately
 npx vite build
 
-# Build the server files
-npx esbuild server/index.ts api/_index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
-
-# Ensure api directory exists in output
-mkdir -p dist/api
-
-# Confirm output
-echo "Build completed successfully!"
-echo "Files in dist directory:"
-ls -la dist/
+echo "Vercel Static Build completed successfully!"
+echo "Files in dist/public directory:"
+ls -la dist/public/

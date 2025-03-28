@@ -1,0 +1,19 @@
+# Vercel deployment ignore file
+
+# Development files
+.git
+node_modules
+dist
+.env
+.env.local
+
+# Configuration files for local development only
+drizzle.config.ts
+
+# Build scripts
+vercel-build.sh
+
+# Large files and fixtures
+fixtures/
+*.log
+*.lock

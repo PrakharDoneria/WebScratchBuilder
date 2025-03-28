@@ -4,16 +4,16 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 function getBaseUrl() {
   // Check if we're in a browser environment
   if (typeof window !== 'undefined') {
-    // If using localhost, use relative path
+    // When developing locally
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       return '';
     }
     
-    // For production, use the deployed API URL
+    // For Vercel deployments with api routes in the same domain
     return '';
   }
   
-  // Fallback to relative path
+  // Fallback to relative path for SSR
   return '';
 }
 

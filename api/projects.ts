@@ -1,6 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { storage } from '../server/storage';
+import { LocalStorage } from '../server/storage';
 import { insertProjectSchema, updateProjectSchema } from '../shared/schema';
+
+// Create storage instance for serverless (must use LocalStorage in serverless)
+const storage = new LocalStorage();
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Enable CORS
@@ -15,12 +18,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
+  console.log(`Processing ${req.method} request to /api/projects${req.query.id ? '/' + req.query.id : ''}`);
+
   // Get all projects
   if (req.method === 'GET' && !req.query.id) {
     try {
       const projects = await storage.getAllProjects();
       return res.status(200).json(projects);
     } catch (error: any) {
+      console.error('Error fetching projects:', error);
       return res.status(500).json({ error: 'Failed to fetch projects', message: error.message });
     }
   }
@@ -39,6 +45,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
       return res.status(200).json(project);
     } catch (error: any) {
+      console.error(`Error fetching project ${id}:`, error);
       return res.status(500).json({ error: 'Failed to fetch project', message: error.message });
     }
   }
@@ -50,6 +57,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const project = await storage.createProject(projectData);
       return res.status(201).json(project);
     } catch (error: any) {
+      console.error('Error creating project:', error);
       return res.status(400).json({ error: 'Invalid project data', message: error.message });
     }
   }
@@ -69,6 +77,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
       return res.status(200).json(project);
     } catch (error: any) {
+      console.error(`Error updating project ${id}:`, error);
       return res.status(400).json({ error: 'Invalid project data', message: error.message });
     }
   }
@@ -87,6 +96,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
       return res.status(204).end();
     } catch (error: any) {
+      console.error(`Error deleting project ${id}:`, error);
       return res.status(500).json({ error: 'Failed to delete project', message: error.message });
     }
   }

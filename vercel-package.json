@@ -1,0 +1,8 @@
+{
+  "name": "blockhtml-editor",
+  "version": "1.0.0",
+  "description": "Block-based HTML editor",
+  "scripts": {
+    "build": "npx vite build"
+  }
+}
